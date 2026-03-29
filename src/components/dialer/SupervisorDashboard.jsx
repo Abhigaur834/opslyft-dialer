@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { auth, db } from "./firebase";
+import { auth, db } from "../../firebase"; // ✅ FIXED
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
 

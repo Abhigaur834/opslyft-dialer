@@ -1,32 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { auth, db } from "./firebase"; // make sure firebase.js configured hai
-import {
-  createUserWithEmailAndPassword
-} from "firebase/auth";
-import {
-  collection,
-  onSnapshot,
-  doc,
-  setDoc
-} from "firebase/firestore";
+import { auth, db } from "./firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
 
 const SupervisorDashboard = () => {
   const [agents, setAgents] = useState([]);
 
-  // 🔥 LIVE AGENTS LIST
+  // 🔥 LIVE AGENT LIST
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, "agents"), (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
+    const unsubscribe = onSnapshot(collection(db, "agents"), (snapshot) => {
+      const agentList = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
-      setAgents(data);
+      setAgents(agentList);
     });
 
-    return () => unsub();
+    return () => unsubscribe();
   }, []);
 
-  // 🔥 CREATE AGENT FUNCTION (NO BACKEND NEEDED)
+  // 🔥 CREATE AGENT FUNCTION
   const createAgent = async () => {
     const name = prompt("Enter Agent Name");
 
@@ -37,7 +30,7 @@ const SupervisorDashboard = () => {
     const password = "123456";
 
     try {
-      // ✅ CREATE AUTH USER
+      // 🔐 CREATE AUTH USER
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -46,47 +39,45 @@ const SupervisorDashboard = () => {
 
       const uid = userCredential.user.uid;
 
-      // ✅ USERS COLLECTION (ROLE)
+      // 👤 USERS COLLECTION
       await setDoc(doc(db, "users", uid), {
         role: "agent",
-        email
+        email,
       });
 
-      // ✅ AGENTS COLLECTION (LIVE DATA)
+      // 📞 AGENTS COLLECTION
       await setDoc(doc(db, "agents", uid), {
         name,
         email,
         status: "Idle",
         callTime: 0,
-        createdAt: new Date()
+        createdAt: new Date(),
       });
 
-      alert(`✅ Agent Created!\n\nEmail: ${email}\nPassword: ${password}`);
+      alert(`✅ Agent Created\n\nEmail: ${email}\nPassword: ${password}`);
     } catch (error) {
-      alert("Error: " + error.message);
+      alert("❌ Error: " + error.message);
     }
   };
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>🔥 Supervisor Dashboard</h2>
+      <h2>Supervisor Dashboard</h2>
 
-      {/* 🔥 CREATE BUTTON */}
       <button
         onClick={createAgent}
         style={{
           padding: "10px 20px",
-          background: "#000",
-          color: "#fff",
+          background: "black",
+          color: "white",
           border: "none",
+          cursor: "pointer",
           marginBottom: "20px",
-          cursor: "pointer"
         }}
       >
         + Create Agent
       </button>
 
-      {/* 🔥 LIVE AGENTS TABLE */}
       <table border="1" cellPadding="10">
         <thead>
           <tr>

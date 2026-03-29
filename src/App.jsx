@@ -1,4 +1,4 @@
-import SupervisorDashboard from "./SupervisorDashboard";
+import SupervisorDashboard from "./components/dialer/SupervisorDashboard";
 
 function App() {
   return <SupervisorDashboard />;

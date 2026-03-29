@@ -1,5 +1,7 @@
-import DialerApp from "./components/dialer/DialerApp";
+import SupervisorDashboard from "./SupervisorDashboard";
 
-export default function App() {
-  return <DialerApp />;
+function App() {
+  return <SupervisorDashboard />;
 }
+
+export default App;
